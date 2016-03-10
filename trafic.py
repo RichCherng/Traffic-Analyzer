@@ -56,7 +56,9 @@ def checkKey(key, dict):
 	else :
 		return False
 
+# create a logs of all speed between 2 intersection
 def getSpeed(speeds , carID, cars):
+	#speedList is [time_1, time_2, velocty, street_1, street_2, carID]
 	speedList = []
 	logs = []
 	#get all the log and sort it
@@ -85,14 +87,31 @@ def getSpeed(speeds , carID, cars):
 				t1 = convertToSec(time1[1], time1[2])
 				t2 = convertToSec(time2[1], time2[2])
 				delTime = abs(t1 - t2)
+				'''
 				print (delTime)
 				print (dist)
-				#print (logs[i][3])
-				#print (logs[i+1][3])
-				velocity = float(dist/delTime)
-				print (velocity)
+				print (logs[i][3])
+				print (logs[i+1][3])
+				'''
+				
+				velocity = float(dist/delTime) * 3600
+				if(velocity < 5): #threshold velocity
+					continue
 
-	return 0	
+				#"{} and {}".format("string", 1)
+				#print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]),end="")
+				#print (velocity)
+
+				speed = [logs[i][0],logs[i+1][0], velocity, logs[i][3], logs[i+1][3], logs[i][4]]
+
+				speedList.append(speeds)
+				
+				#speeds.append(speedList)
+	
+	#print (speed)
+	#print (len(speedList))
+	if len(speedList) > 0:
+		speeds[carID] = speedList	
 
 
 
@@ -101,8 +120,9 @@ speeds = {}
 ### Read in file ###
 f = open('Iteris_bt_05-18-2014.txt', 'r');
 #f = open('test.txt', 'r')
-
+count = 0;
 for line in f:
+	count += 1
 	if line == "\n":
 		#print (line)
 		break 
@@ -121,11 +141,12 @@ for line in f:
 		logs.append(capture)
 		cars[macID] = logs
 
+print (count)
+
 ### End of read file ###
 
 
 ### find speed of the car ###
-
 for key in cars.keys():
 	getSpeed(speeds, key, cars)
 	#print (speeds.get(key))
