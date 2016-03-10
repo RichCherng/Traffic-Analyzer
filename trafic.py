@@ -99,7 +99,7 @@ def getSpeed(speeds , carID, cars):
 					continue
 
 				#"{} and {}".format("string", 1)
-				#print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]),end="")
+				print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]))
 				#print (velocity)
 
 				speed = [logs[i][0],logs[i+1][0], velocity, logs[i][3], logs[i+1][3], logs[i][4]]
@@ -116,7 +116,7 @@ def getSpeed(speeds , carID, cars):
 
 
 cars = {}
-speeds = {}
+car_speeds = {}
 ### Read in file ###
 f = open('Iteris_bt_05-18-2014.txt', 'r');
 #f = open('test.txt', 'r')
@@ -134,7 +134,7 @@ for line in f:
 	if not checkKey(macID, cars):
 		logs = [capture]
 		cars[macID] = logs
-		speeds[macID] = {}
+		car_speeds[macID] = {}
 		#print ('added')
 	else :
 		logs = cars[macID]
@@ -148,9 +148,12 @@ print (count)
 
 ### find speed of the car ###
 for key in cars.keys():
-	getSpeed(speeds, key, cars)
+	getSpeed(car_speeds, key, cars)
+	if not len(car_speeds[key]) > 0:
+		del car_speeds[key]
 	#print (speeds.get(key))
 
+print (len(car_speeds))
 
 #############################
 #for key in cars.keys():
