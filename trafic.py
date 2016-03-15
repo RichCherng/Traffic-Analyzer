@@ -22,16 +22,6 @@ def getDistance(street1, street2):
 	return distances.get(streets[0]+'-'+streets[1])
 
 
-	'''
-	#intersections = ""
-	if street1 < street2:
-		#intersections += street1 + '-' + street2
-		return distances.get(street1+'-'+street2)
-	else :
-		#intersections += street2 + '-' + street1
-		return distances.get(street2+'-'+street1)
-	'''
-
 
 def convertToSec(time, period):
 
@@ -87,15 +77,9 @@ def getSpeed(speeds , carID, cars):
 				t1 = convertToSec(time1[1], time1[2])
 				t2 = convertToSec(time2[1], time2[2])
 				delTime = abs(t1 - t2)
-				'''
-				print (delTime)
-				print (dist)
-				print (logs[i][3])
-				print (logs[i+1][3])
-				'''
 				
 				velocity = float(dist/delTime) * 3600
-				if(velocity < 5): #threshold velocity
+				if(velocity < 20): #threshold velocity
 					continue
 
 				#"{} and {}".format("string", 1)
@@ -108,18 +92,18 @@ def getSpeed(speeds , carID, cars):
 				
 				#speeds.append(speedList)
 	
-	#print (speed)
-	#print (len(speedList))
+
 	if len(speedList) > 0:
 		speeds[carID] = speedList	
 
 
-
-cars = {}
+def main():
+	cars = {}
 car_speeds = {}
+street_avg_speed = {x for x in distances.keys()}
+
 ### Read in file ###
 f = open('Iteris_bt_05-18-2014.txt', 'r');
-#f = open('test.txt', 'r')
 count = 0;
 for line in f:
 	count += 1
@@ -127,8 +111,6 @@ for line in f:
 		#print (line)
 		break 
 	capture = line.split(',')
-	#date = capture[0]
-	#intersection = capture[3]
 	macID = capture[4]
 
 	if not checkKey(macID, cars):
@@ -146,28 +128,39 @@ print (count)
 ### End of read file ###
 
 
-### find speed of the car ###
+### Find speeds of the car ###
+	
+	#  
+
 for key in cars.keys():
 	getSpeed(car_speeds, key, cars)
 	if not len(car_speeds[key]) > 0:
 		del car_speeds[key]
 	#print (speeds.get(key))
 
-print (len(car_speeds))
+print (street_avg_speed)
+#print (len(car_speeds))
 
 #############################
+
+
+### Find Average Travel Time for each edge ###
+calculateAvergeSpeed(car_speeds, street_avg_speed)
+
+
+
+
+##############################################
+
+####Temporary Interface #######
+
+
+
+
+
 #for key in cars.keys():
 	#for log in cars.get(key):
 		#print (log)
 
 
 #print (getDistance('Lincoln_East', 'Lincoln_Harbor'))
-
-
-
-
-#for index, item in enumerate(my_list):
-#    print index, item
-
-#for i in range(len(my_list)):
- #   print i
