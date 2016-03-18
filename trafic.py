@@ -1,8 +1,10 @@
 
+from Street import Street
+
 
 distances = { 'Euclid-Harbor' :	1.3, 'East-Harbor': 1.0, 'East-Statecollege': 0.8}
-
-
+Streets = {} 
+'''
 # distance between two intersections
 def getDistance(street1, street2):
 
@@ -20,6 +22,26 @@ def getDistance(street1, street2):
 
 	streets.sort()
 	return distances.get(streets[0]+'-'+streets[1])
+'''
+
+def getDistance(intersection_1, intersection_2):
+	
+	if intersection_1 == intersection_2:
+		return 0
+	if intersection_1 < intersection_2:
+		st = Streets.get(intersection_1+"-"+intersection_2)
+		if st is None:
+			return None
+		else:
+			return st.length
+		#return Streets[intersection_1+"-"+intersection_2].length
+	else:
+		st = Streets.get(intersection_2+"-"+intersection_1)
+		if st is None:
+			return None
+		else:
+			return st.length
+		#return Streets[intersection_2+"-"+intersection_1].length
 
 
 
@@ -96,58 +118,61 @@ def getSpeed(speeds , carID, cars):
 	if len(speedList) > 0:
 		speeds[carID] = speedList	
 
+def readFile(fileName, cars, car_speeds):
+	f = open(fileName, 'r');
+	 
+
+	for line in f:
+
+		if line == "\n":
+			break
+
+		capture = line.split(',')
+		macID = capture[4]
+
+		if not checkKey(macID, cars):
+			logs = [capture]
+			cars[macID] = logs
+			car_speeds[macID] = {}
+
+		else :
+			logs = cars[macID]
+			logs.append(capture)
+			cars[macID] = logs
+
+def addStreet(str_lists, intersection_1, intersection_2, distance):
+
+	if(intersection_1 < intersection_2):
+		str_lists[intersection_1 + "-" + intersection_2] = Street(intersection_1,
+		 intersection_2, distance)
+		#return Street(intersection_1, intersection_2, distance)
+	else:
+		str_lists[intersection_2 + "-" + intersection_1] = Street(intersection_2,
+		 intersection_1, distance)
+		#return Street(intersection_2, intersection_1, distance)
+
 
 def main():
 	cars = {}
-car_speeds = {}
-street_avg_speed = {x for x in distances.keys()}
+	car_speeds = {}
+	street_avg_speed = {x for x in distances.keys()}
 
-### Read in file ###
-f = open('Iteris_bt_05-18-2014.txt', 'r');
-count = 0;
-for line in f:
-	count += 1
-	if line == "\n":
-		#print (line)
-		break 
-	capture = line.split(',')
-	macID = capture[4]
+	readFile('Iteris_bt_05-18-2014.txt', cars, car_speeds)
 
-	if not checkKey(macID, cars):
-		logs = [capture]
-		cars[macID] = logs
-		car_speeds[macID] = {}
-		#print ('added')
-	else :
-		logs = cars[macID]
-		logs.append(capture)
-		cars[macID] = logs
+	for key in cars.keys():
+		getSpeed(car_speeds, key, cars)
+		if not len(car_speeds[key]) > 0:
+			del car_speeds[key]
 
-print (count)
+	print (street_avg_speed)
 
-### End of read file ###
+	#print (len(car_speeds))
+	#print (car_speeds)
+	#############################
 
 
-### Find speeds of the car ###
-	
-	#  
-
-for key in cars.keys():
-	getSpeed(car_speeds, key, cars)
-	if not len(car_speeds[key]) > 0:
-		del car_speeds[key]
-	#print (speeds.get(key))
-
-print (street_avg_speed)
-#print (len(car_speeds))
-
-#############################
-
-
-### Find Average Travel Time for each edge ###
-calculateAvergeSpeed(car_speeds, street_avg_speed)
-
-
+	### Find Average Travel Time for each edge ###
+	#calculateAvergeSpeed(car_speeds, street_avg_speed)
 
 
 ##############################################
@@ -164,3 +189,8 @@ calculateAvergeSpeed(car_speeds, street_avg_speed)
 
 
 #print (getDistance('Lincoln_East', 'Lincoln_Harbor'))
+addStreet(Streets, "Lincoln_Statecollege", "Lincoln_East", 0.8)
+addStreet(Streets, "Lincoln_East", "Lincoln_Harbor", 1.0)
+addStreet(Streets, "Lincoln_Euclid", "Lincoln_Harbor", 1.3)
+print (Streets)
+main()
