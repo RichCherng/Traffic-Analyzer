@@ -14,3 +14,11 @@ class Street(object):
 			tempList = []
 			#speeds["abc"] = tempList
 			self.speeds[x] = tempList
+
+	def addSpeed(self, time, velocity):
+		#print (time)
+		#print (self.speeds)
+		speeds_list = self.speeds[time]
+		speeds_list.append(velocity)
+		#print (self.speeds)
+		#print (len(speeds_list))

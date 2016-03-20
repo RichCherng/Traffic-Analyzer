@@ -26,22 +26,26 @@ def getDistance(street1, street2):
 
 def getDistance(intersection_1, intersection_2):
 	
+	st = None
 	if intersection_1 == intersection_2:
 		return 0
 	if intersection_1 < intersection_2:
 		st = Streets.get(intersection_1+"-"+intersection_2)
-		if st is None:
-			return None
-		else:
-			return st.length
+		#if st is None:
+		#	return None
+		#else:
+		#	return st.length
 		#return Streets[intersection_1+"-"+intersection_2].length
 	else:
 		st = Streets.get(intersection_2+"-"+intersection_1)
-		if st is None:
-			return None
-		else:
-			return st.length
 		#return Streets[intersection_2+"-"+intersection_1].length
+
+	#if st is None:
+	#		return None
+	#	else:
+	#		return st.length
+
+	return None if st is None else st.length
 
 
 
@@ -49,15 +53,43 @@ def convertToSec(time, period):
 
 	#convert to second, add time period if pm
 	# 12 hrs = 43200s
-	ti = time.split()
-	
-	t = ti[0].split(':')
+	#ti = time.split()
+	t = time.split(':')
 	if(period == 'PM'):
 		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2]) + 43200
 	else:
 		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2])
 	
 
+# add speed to the list in Street object
+# Streets = dictionary contain object Street
+# velocity = speed in mile/hr
+# time = ['mm/dd/yyyy', 'hh:mm:ss', 'AM/PM']
+def updateSpeed(intersection_1, intersection_2, velocity, time):
+	#print (time)
+	st = None
+	if intersection_1 < intersection_2:
+		st = Streets.get(intersection_1+"-"+intersection_2)
+	else:
+		st = Streets.get(intersection_2+"-"+intersection_1)
+
+	#print (st.intersection_1)
+	#print (st.intersection_2)
+	if st == None:
+		print("Error: No Street Found")
+
+
+	### update the street object ###
+	#print (time)
+	t = time[1].split(':')
+	#print (time)
+	hour = int(t[0])
+	if time[2] == "PM" and int(t[0]) < 12 :
+		hour += 12
+
+	st.addSpeed(hour, velocity)
+
+					###
 
 # Check if the car has been registered
 def checkKey(key, dict):
@@ -86,9 +118,13 @@ def getSpeed(speeds , carID, cars):
 
 			# return zero or None = not in straight path
 			# Get distance between two intersection
-			dist = getDistance(logs[i+1][3], logs[i][3])
+			intersection_1 = logs[i+1][3]
+			intersection_2 = logs[i][3]
+			dist = getDistance(intersection_1, intersection_2)
 			if dist is None:
 				continue
+			#if dist > 0:
+				#print (dist)
 			# Get time : ['mm/dd/yyyy', 'hh:mm:ss', 'AM']
 			time1 = logs[i][0].split()
 			time2 = logs[i+1][0].split()
@@ -100,9 +136,13 @@ def getSpeed(speeds , carID, cars):
 				t2 = convertToSec(time2[1], time2[2])
 				delTime = abs(t1 - t2)
 				
+				#convert to mile/hr
 				velocity = float(dist/delTime) * 3600
 				if(velocity < 20): #threshold velocity
 					continue
+
+				# add speed to the list of speed in object street
+				updateSpeed(intersection_1, intersection_2, velocity, time1)
 
 				#"{} and {}".format("string", 1)
 				print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]))
@@ -164,7 +204,7 @@ def main():
 		if not len(car_speeds[key]) > 0:
 			del car_speeds[key]
 
-	print (street_avg_speed)
+	#print (street_avg_speed)
 
 	#print (len(car_speeds))
 	#print (car_speeds)
@@ -192,5 +232,5 @@ def main():
 addStreet(Streets, "Lincoln_Statecollege", "Lincoln_East", 0.8)
 addStreet(Streets, "Lincoln_East", "Lincoln_Harbor", 1.0)
 addStreet(Streets, "Lincoln_Euclid", "Lincoln_Harbor", 1.3)
-print (Streets)
+#print (Streets)
 main()
