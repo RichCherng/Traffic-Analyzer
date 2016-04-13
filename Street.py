@@ -16,6 +16,8 @@ class Street(object):
 			self.speeds[x] = tempList
 
 	def addSpeed(self, time, velocity):
+		#print (self.intersection_1+"-"+self.intersection_2)
+		#print (velocity)
 		#print (time)
 		#print (self.speeds)
 		speeds_list = self.speeds[time]
@@ -28,13 +30,29 @@ class Street(object):
 	def getSpeed(self):
 		return len(self.speeds)
 
+	def getName(self):
+		return self.intersection_1+"-"+self.intersection_2
+
 	def getAvgSpeed(self):
-		avgSpeed = {}
+		avgSpeed = []
+		#print (self.speeds.get(2))
 		for i in range(1,24):
 			speeds = self.speeds.get(i)
 			sumSpeed = 0
 			for s in speeds:
 				sumSpeed += s
-			avgSpeed[i] = sumSpeed/len(speeds)
+			avgSpeed.append(sumSpeed/len(speeds))
 
 		return avgSpeed
+
+	def getCarCount(self):
+		hrs = []
+
+		for i in range(1,24):
+			speeds = self.speeds.get(i)
+			count = 0
+			for s in speeds:
+				count += 1
+			hrs.append(count)
+
+		return hrs

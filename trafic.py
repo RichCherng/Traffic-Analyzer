@@ -87,6 +87,8 @@ def updateSpeed(intersection_1, intersection_2, velocity, time):
 	if time[2] == "PM" and int(t[0]) < 12 :
 		hour += 12
 
+	#print (st.getName())
+	#print (velocity)
 	st.addSpeed(hour, velocity)
 
 					###
@@ -140,12 +142,12 @@ def getSpeed(speeds , carID, cars):
 				velocity = float(dist/delTime) * 3600
 				if(velocity < 20): #threshold velocity
 					continue
-
+				#print (velocity)
 				# add speed to the list of speed in object street
 				updateSpeed(intersection_1, intersection_2, velocity, time1)
 
 				#"{} and {}".format("string", 1)
-				print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]))
+				#print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]))
 				#print (velocity)
 
 				speed = [logs[i][0],logs[i+1][0], velocity, logs[i][3], logs[i+1][3], logs[i][4]]
@@ -204,7 +206,6 @@ def main():
 		if not len(car_speeds[key]) > 0:
 			del car_speeds[key]
 
-	print ()
 
 	#print (street_avg_speed)
 
@@ -237,4 +238,8 @@ addStreet(Streets, "Lincoln_Euclid", "Lincoln_Harbor", 1.3)
 main()
 
 for key, value in Streets.items():
+	print (value.getName())
 	print(value.getAvgSpeed())
+	#value.getAvgSpeed()
+	print (value.getCarCount())
+	
