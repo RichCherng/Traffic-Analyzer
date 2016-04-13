@@ -36,8 +36,12 @@ class Street(object):
 	def getAvgSpeed(self):
 		avgSpeed = []
 		#print (self.speeds.get(2))
-		for i in range(1,24):
+
+		for i in range(0,24):
 			speeds = self.speeds.get(i)
+			if len(speeds) < 1:
+				avgSpeed.append(0)
+				continue
 			sumSpeed = 0
 			for s in speeds:
 				sumSpeed += s
@@ -48,7 +52,7 @@ class Street(object):
 	def getCarCount(self):
 		hrs = []
 
-		for i in range(1,24):
+		for i in range(0,24):
 			speeds = self.speeds.get(i)
 			count = 0
 			for s in speeds:

@@ -1,6 +1,8 @@
 
 from Street import Street
-
+from pyqtgraph.Qt import QtGui, QtCore
+import numpy as np
+import pyqtgraph as pg
 
 distances = { 'Euclid-Harbor' :	1.3, 'East-Harbor': 1.0, 'East-Statecollege': 0.8}
 Streets = {} 
@@ -194,7 +196,7 @@ def addStreet(str_lists, intersection_1, intersection_2, distance):
 		#return Street(intersection_2, intersection_1, distance)
 
 
-def main():
+def cal():
 	cars = {}
 	car_speeds = {}
 	street_avg_speed = {x for x in distances.keys()}
@@ -235,11 +237,45 @@ def main():
 addStreet(Streets, "Lincoln_Statecollege", "Lincoln_East", 0.8)
 addStreet(Streets, "Lincoln_East", "Lincoln_Harbor", 1.0)
 addStreet(Streets, "Lincoln_Euclid", "Lincoln_Harbor", 1.3)
-main()
+cal()
 
-for key, value in Streets.items():
-	print (value.getName())
-	print(value.getAvgSpeed())
-	#value.getAvgSpeed()
-	print (value.getCarCount())
+
 	
+#app = QtGui.QApplication([])
+
+#win = pg.GraphicsWindow(title="Plotting Example")
+#win.resize(1000,600)
+#win.setWindowTitle('Testing')
+
+#p1 = win.addPlot(title="Basic array plotting",x= np.arange(1000), y=np.random.normal(size=1000))
+
+#p2 = win.addPlot(title="Multiple curves")
+#p2.plot(np.random.normal(size=100), pen=(255,0,0), name="Red curve")
+#p2.plot(np.random.normal(size=110)+5, pen=(0,255,0), name="Blue curve")
+#p2.plot(np.random.normal(size=120)+10, pen=(0,0,255), name="Green curve")
+
+
+
+#p1 = win.addPlot(title="Average Speed per hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
+
+
+if __name__ == '__main__':
+	import sys
+	for key, value in Streets.items():
+		#print (len(value.getAvgSpeed()))
+		print (value.getName())
+
+	s = input("Select Street: ")
+
+
+	app = QtGui.QApplication([])
+
+	win = pg.GraphicsWindow(title="Traffic Graph")
+	win.resize(1000,600)
+	win.setWindowTitle("Traffic Graph")
+
+	p1 = win.addPlot(title="Average Speed per hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
+
+	p2 = win.addPlot(title="Car Count per Hour", x = np.arange(24), y = Streets.get(s).getCarCount())
+	if(sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+		QtGui.QApplication.instance().exec_()
