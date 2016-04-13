@@ -20,5 +20,21 @@ class Street(object):
 		#print (self.speeds)
 		speeds_list = self.speeds[time]
 		speeds_list.append(velocity)
+		#print (len(self.speeds))
+		#print (speeds_list)
 		#print (self.speeds)
 		#print (len(speeds_list))
+
+	def getSpeed(self):
+		return len(self.speeds)
+
+	def getAvgSpeed(self):
+		avgSpeed = {}
+		for i in range(1,24):
+			speeds = self.speeds.get(i)
+			sumSpeed = 0
+			for s in speeds:
+				sumSpeed += s
+			avgSpeed[i] = sumSpeed/len(speeds)
+
+		return avgSpeed

@@ -204,6 +204,8 @@ def main():
 		if not len(car_speeds[key]) > 0:
 			del car_speeds[key]
 
+	print ()
+
 	#print (street_avg_speed)
 
 	#print (len(car_speeds))
@@ -232,5 +234,7 @@ def main():
 addStreet(Streets, "Lincoln_Statecollege", "Lincoln_East", 0.8)
 addStreet(Streets, "Lincoln_East", "Lincoln_Harbor", 1.0)
 addStreet(Streets, "Lincoln_Euclid", "Lincoln_Harbor", 1.3)
-#print (Streets)
 main()
+
+for key, value in Streets.items():
+	print(value.getAvgSpeed())
