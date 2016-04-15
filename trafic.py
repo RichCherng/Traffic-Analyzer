@@ -4,28 +4,9 @@ from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 import pyqtgraph as pg
 
-distances = { 'Euclid-Harbor' :	1.3, 'East-Harbor': 1.0, 'East-Statecollege': 0.8}
 Streets = {} 
-'''
-# distance between two intersections
-def getDistance(street1, street2):
 
-	s1 = street1.split('_')
-	s2 = street2.split('_')
-	streets = [s1[0], s1[1], s2[0], s2[1]]
-	#streets = set(s1[0],s1[1],s2[0],s2[1])
-	streets = sorted(set(streets))	
-	#l3 = [x for x in l1 if x not in l2]
-	streets = [x for x in streets if not (x in s1 and x in s2)]
-
-	if len(streets) != 2:
-		#print ("Error")
-		return 0	
-
-	streets.sort()
-	return distances.get(streets[0]+'-'+streets[1])
-'''
-
+#	Take in 2 intersections and return the distance between the Them
 def getDistance(intersection_1, intersection_2):
 	
 	st = None
@@ -33,72 +14,46 @@ def getDistance(intersection_1, intersection_2):
 		return 0
 	if intersection_1 < intersection_2:
 		st = Streets.get(intersection_1+"-"+intersection_2)
-		#if st is None:
-		#	return None
-		#else:
-		#	return st.length
-		#return Streets[intersection_1+"-"+intersection_2].length
 	else:
 		st = Streets.get(intersection_2+"-"+intersection_1)
-		#return Streets[intersection_2+"-"+intersection_1].length
 
-	#if st is None:
-	#		return None
-	#	else:
-	#		return st.length
-
+	#if no such street exists, return None
 	return None if st is None else st.length
 
 
-
+#Convert time of the day to second starting from midnight
 def convertToSec(time, period):
 
-	#convert to second, add time period if pm
-	# 12 hrs = 43200s
-	#ti = time.split()
 	t = time.split(':')
 	if(period == 'PM'):
 		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2]) + 43200
 	else:
 		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2])
-	
 
-# add speed to the list in Street object
-# Streets = dictionary contain object Street
-# velocity = speed in mile/hr
-# time = ['mm/dd/yyyy', 'hh:mm:ss', 'AM/PM']
+
+#add the speed of that street
 def updateSpeed(intersection_1, intersection_2, velocity, time):
-	#print (time)
+	#find that specific street between two intersections
 	st = None
 	if intersection_1 < intersection_2:
 		st = Streets.get(intersection_1+"-"+intersection_2)
 	else:
 		st = Streets.get(intersection_2+"-"+intersection_1)
-
-	#print (st.intersection_1)
-	#print (st.intersection_2)
 	if st == None:
 		print("Error: No Street Found")
 
 
 	### update the street object ###
-	#print (time)
 	t = time[1].split(':')
-	#print (time)
 	hour = int(t[0])
 	if time[2] == "PM" and int(t[0]) < 12 :
 		hour += 12
-
-	#print (st.getName())
-	#print (velocity)
 	st.addSpeed(hour, velocity)
 
-					###
 
 # Check if the car has been registered
 def checkKey(key, dict):
 	keys = dict.keys()
-	
 	if key in keys:
 		return True
 	else :
@@ -113,8 +68,6 @@ def getSpeed(speeds , carID, cars):
 	for log in cars.get(carID):
 		logs.append(log)
 	logs.sort()
-#	for i in logs:
-#		print (i)
 
 	for i in range(len(logs)):
 		dist = 0
@@ -127,8 +80,7 @@ def getSpeed(speeds , carID, cars):
 			dist = getDistance(intersection_1, intersection_2)
 			if dist is None:
 				continue
-			#if dist > 0:
-				#print (dist)
+
 			# Get time : ['mm/dd/yyyy', 'hh:mm:ss', 'AM']
 			time1 = logs[i][0].split()
 			time2 = logs[i+1][0].split()
@@ -144,7 +96,7 @@ def getSpeed(speeds , carID, cars):
 				velocity = float(dist/delTime) * 3600
 				if(velocity < 20): #threshold velocity
 					continue
-				#print (velocity)
+
 				# add speed to the list of speed in object street
 				updateSpeed(intersection_1, intersection_2, velocity, time1)
 
@@ -153,15 +105,13 @@ def getSpeed(speeds , carID, cars):
 				#print (velocity)
 
 				speed = [logs[i][0],logs[i+1][0], velocity, logs[i][3], logs[i+1][3], logs[i][4]]
-
 				speedList.append(speeds)
-				
-				#speeds.append(speedList)
 	
-
 	if len(speedList) > 0:
 		speeds[carID] = speedList	
 
+
+# Read in file
 def readFile(fileName, cars, car_speeds):
 	f = open(fileName, 'r');
 	 
@@ -184,6 +134,7 @@ def readFile(fileName, cars, car_speeds):
 			logs.append(capture)
 			cars[macID] = logs
 
+# add more streets
 def addStreet(str_lists, intersection_1, intersection_2, distance):
 
 	if(intersection_1 < intersection_2):
@@ -199,7 +150,7 @@ def addStreet(str_lists, intersection_1, intersection_2, distance):
 def cal():
 	cars = {}
 	car_speeds = {}
-	street_avg_speed = {x for x in distances.keys()}
+	#street_avg_speed = {x for x in distances.keys()}
 
 	readFile('Iteris_bt_05-18-2014.txt', cars, car_speeds)
 
@@ -209,54 +160,13 @@ def cal():
 			del car_speeds[key]
 
 
-	#print (street_avg_speed)
-
-	#print (len(car_speeds))
-	#print (car_speeds)
-	#############################
-
-
-	### Find Average Travel Time for each edge ###
-	#calculateAvergeSpeed(car_speeds, street_avg_speed)
-
-
-##############################################
-
-####Temporary Interface #######
-
-
-
-
-
-#for key in cars.keys():
-	#for log in cars.get(key):
-		#print (log)
-
-
-#print (getDistance('Lincoln_East', 'Lincoln_Harbor'))
+###### Create Streets ######
 addStreet(Streets, "Lincoln_Statecollege", "Lincoln_East", 0.8)
 addStreet(Streets, "Lincoln_East", "Lincoln_Harbor", 1.0)
 addStreet(Streets, "Lincoln_Euclid", "Lincoln_Harbor", 1.3)
+
+
 cal()
-
-
-	
-#app = QtGui.QApplication([])
-
-#win = pg.GraphicsWindow(title="Plotting Example")
-#win.resize(1000,600)
-#win.setWindowTitle('Testing')
-
-#p1 = win.addPlot(title="Basic array plotting",x= np.arange(1000), y=np.random.normal(size=1000))
-
-#p2 = win.addPlot(title="Multiple curves")
-#p2.plot(np.random.normal(size=100), pen=(255,0,0), name="Red curve")
-#p2.plot(np.random.normal(size=110)+5, pen=(0,255,0), name="Blue curve")
-#p2.plot(np.random.normal(size=120)+10, pen=(0,0,255), name="Green curve")
-
-
-
-#p1 = win.addPlot(title="Average Speed per hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
 
 
 if __name__ == '__main__':
@@ -275,7 +185,11 @@ if __name__ == '__main__':
 	win.setWindowTitle("Traffic Graph")
 
 	p1 = win.addPlot(title="Average Speed per hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
+	p1.setLabel('bottom', 'Hour', 's')
+	p1.setLabel('left', 'Average Speed', 'mile/hr')
 
 	p2 = win.addPlot(title="Car Count per Hour", x = np.arange(24), y = Streets.get(s).getCarCount())
+	p2.setLabel('bottom', 'Hour', 's')
+	p2.setLabel('left', 'Car Count', 's')
 	if(sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
 		QtGui.QApplication.instance().exec_()
