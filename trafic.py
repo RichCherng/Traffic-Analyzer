@@ -183,7 +183,7 @@ cal()
 if __name__ == '__main__':
 	import sys
 	for key, value in Streets.items():
-		print (value.getAvgSpeed())
+		#print (value.getAvgSpeed())
 		print (value.getName())
 
 	s = input("Select Street: ")
