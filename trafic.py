@@ -29,9 +29,9 @@ def convertToSec(time, period):
 	#if t[0] == 0:
 	#	print (t)
 	if(period == 'PM'):
-		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2]) + 43200
+		return (int(t[0])%12 * 3600) + (int(t[1]) * 60) + int(t[2]) + 43200
 	else:
-		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2])
+		return (int(t[0])%12 * 3600) + (int(t[1]) * 60) + int(t[2])
 
 
 #add the speed of that street
@@ -52,8 +52,11 @@ def updateSpeed(intersection_1, intersection_2, velocity, time, timeStamp):
 	hour = int(t[0])
 	#if hour == 0:
 	#	print (time[1])
-	if time[2] == "PM" and int(t[0]) < 12 :
-		hour += 12
+	if time[2] == "PM" :
+		hour = (hour % 12) + 12
+
+	else:
+		hour %= 12
 
 #	print (intersection_1)
 #	print (intersection_2)
@@ -87,8 +90,10 @@ def updateTravelTime(intersection_1, intersection_2, travelTime, time):
 	hour = int(t[0])
 	#if hour == 0:
 	#	print (time[1])
-	if time[2] == "PM" and int(t[0]) < 12 :
-		hour += 12
+	if time[2] == "PM" :
+		hour = (hour % 12) + 12
+	else:
+		hour = hour % 12
 
 	st.addTravelTime(hour, travelTime)
 
@@ -135,6 +140,12 @@ def getSpeed(speeds , carID, cars):
 				delTime = abs(t1 - t2)
 				
 				#convert to mile/hr
+				if delTime == 0:
+					print (t1)
+					print (time1)
+					print (t2)
+					print (time2)
+					inp = input("hi")
 				velocity = float(dist/delTime) * 3600
 				if(velocity < 20): #threshold velocity
 					continue
