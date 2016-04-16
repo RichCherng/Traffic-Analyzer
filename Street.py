@@ -10,6 +10,7 @@ class Street(object):
 		self.intersection_1 = inte_1
 		self.intersection_2 = inte_2
 		self.length = l
+		self.speeds = {}
 		for x in range(0,24):
 			tempList = []
 			#speeds["abc"] = tempList
@@ -20,12 +21,16 @@ class Street(object):
 		#print (velocity)
 		#print (time)
 		#print (self.speeds)
+
 		speeds_list = self.speeds[time]
 		speeds_list.append(velocity)
+		#self.speeds[time] = speeds_list
+
 		#print (len(self.speeds))
 		#print (speeds_list)
 		#print (self.speeds)
 		#print (len(speeds_list))
+
 
 	def getSpeed(self):
 		return len(self.speeds)

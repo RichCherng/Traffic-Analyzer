@@ -48,6 +48,12 @@ def updateSpeed(intersection_1, intersection_2, velocity, time):
 	hour = int(t[0])
 	if time[2] == "PM" and int(t[0]) < 12 :
 		hour += 12
+
+#	print (intersection_1)
+#	print (intersection_2)
+#	print (velocity)
+#	print (st.getName())
+#	inp = input("check")
 	st.addSpeed(hour, velocity)
 
 
@@ -98,7 +104,12 @@ def getSpeed(speeds , carID, cars):
 					continue
 
 				# add speed to the list of speed in object street
+				#print (intersection_1)
+				#print (intersection_2)
+				#print (velocity)
+				#inp = input("Check")
 				updateSpeed(intersection_1, intersection_2, velocity, time1)
+
 
 				#"{} and {}".format("string", 1)
 				#print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]))
@@ -172,7 +183,7 @@ cal()
 if __name__ == '__main__':
 	import sys
 	for key, value in Streets.items():
-		#print (len(value.getAvgSpeed()))
+		print (value.getAvgSpeed())
 		print (value.getName())
 
 	s = input("Select Street: ")
