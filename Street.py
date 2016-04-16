@@ -2,8 +2,9 @@
 class Street(object):
 	intersection_1 = ""
 	intersection_2 = ""
-	length = 0;
-	speeds = {}
+	length = 0; #distance between two intersections
+	speeds = {} #list of speeds by the hour
+	travelTime = {} #list of travel time by the hour
 
 	def __init__(self, inte_1, inte_2, l):
 
@@ -11,10 +12,13 @@ class Street(object):
 		self.intersection_2 = inte_2
 		self.length = l
 		self.speeds = {}
+		self.travelTime = {}
 		for x in range(0,24):
-			tempList = []
+			newSpeedList = []
+			newTravelTimeList = []
 			#speeds["abc"] = tempList
-			self.speeds[x] = tempList
+			self.speeds[x] = newSpeedList
+			self.travelTime[x] = newTravelTimeList
 
 	def addSpeed(self, time, velocity):
 		#print (self.intersection_1+"-"+self.intersection_2)
@@ -31,6 +35,12 @@ class Street(object):
 		#print (self.speeds)
 		#print (len(speeds_list))
 
+	def addTravelTime(self, time, travelTime):
+
+		travelTime_list = self.travelTime[time]
+		travelTime_list.append(travelTime)
+
+
 
 	def getSpeed(self):
 		return len(self.speeds)
@@ -40,7 +50,7 @@ class Street(object):
 
 	def getAvgSpeed(self):
 		avgSpeed = []
-		#print (self.speeds.get(2))
+		#print (self.speeds)
 
 		for i in range(0,24):
 			speeds = self.speeds.get(i)
@@ -53,6 +63,31 @@ class Street(object):
 			avgSpeed.append(sumSpeed/len(speeds))
 
 		return avgSpeed
+
+
+	def getAvgTime(self):
+		avgTravelTime = []
+		for i in range(0,24):
+			travelTime = self.travelTime.get(i)
+			if len(travelTime) < 1:
+				avgTravelTime.append(0)
+				continue
+			sumTime = 0
+			for s in travelTime:
+				sumTime += s
+			#print (sumTime)
+			#print (len(travelTime)
+			#print (sumTime/len(travelTime) / 60)
+			#
+			#print (sumTime)
+			#print (len(travelTime))
+			#print (sumTime/len(travelTime))
+			#print (sumTime/len(travelTime)/60)
+			#inp = input("check")
+
+			avgTravelTime.append( (sumTime/len(travelTime))/60 )
+
+		return avgTravelTime
 
 	def getCarCount(self):
 		hrs = []

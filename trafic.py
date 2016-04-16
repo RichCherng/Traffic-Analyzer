@@ -24,7 +24,10 @@ def getDistance(intersection_1, intersection_2):
 #Convert time of the day to second starting from midnight
 def convertToSec(time, period):
 
+
 	t = time.split(':')
+	#if t[0] == 0:
+	#	print (t)
 	if(period == 'PM'):
 		return (int(t[0]) * 3600) + (int(t[1]) * 60) + int(t[2]) + 43200
 	else:
@@ -44,8 +47,11 @@ def updateSpeed(intersection_1, intersection_2, velocity, time):
 
 
 	### update the street object ###
+
 	t = time[1].split(':')
 	hour = int(t[0])
+	#if hour == 0:
+	#	print (time[1])
 	if time[2] == "PM" and int(t[0]) < 12 :
 		hour += 12
 
@@ -55,6 +61,35 @@ def updateSpeed(intersection_1, intersection_2, velocity, time):
 #	print (st.getName())
 #	inp = input("check")
 	st.addSpeed(hour, velocity)
+
+
+
+def updateTravelTime(intersection_1, intersection_2, travelTime, time):
+
+	#travelTime in term of seconds
+
+
+	#find that specific street between two intersections
+	st = None
+	if intersection_1 < intersection_2:
+		st = Streets.get(intersection_1+"-"+intersection_2)
+	else:
+		st = Streets.get(intersection_2+"-"+intersection_1)
+
+	if st == None:
+		print("Error: No Street Found")
+
+
+	### update the street object ###
+
+	t = time[1].split(':')
+	hour = int(t[0])
+	#if hour == 0:
+	#	print (time[1])
+	if time[2] == "PM" and int(t[0]) < 12 :
+		hour += 12
+
+	st.addTravelTime(hour, travelTime)
 
 
 # Check if the car has been registered
@@ -109,6 +144,7 @@ def getSpeed(speeds , carID, cars):
 				#print (velocity)
 				#inp = input("Check")
 				updateSpeed(intersection_1, intersection_2, velocity, time1)
+				updateTravelTime(intersection_1, intersection_2, delTime, time1)
 
 
 				#"{} and {}".format("string", 1)
@@ -184,6 +220,8 @@ if __name__ == '__main__':
 	import sys
 	for key, value in Streets.items():
 		#print (value.getAvgSpeed())
+		#value.getAvgSpeed()
+		#print (value.getAvgTime())
 		print (value.getName())
 
 	s = input("Select Street: ")
@@ -195,12 +233,19 @@ if __name__ == '__main__':
 	win.resize(1000,600)
 	win.setWindowTitle("Traffic Graph")
 
-	p1 = win.addPlot(title="Average Speed per hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
+	p1 = win.addPlot(title="Average Speed per Hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
 	p1.setLabel('bottom', 'Hour', 's')
 	p1.setLabel('left', 'Average Speed', 'mile/hr')
 
 	p2 = win.addPlot(title="Car Count per Hour", x = np.arange(24), y = Streets.get(s).getCarCount())
 	p2.setLabel('bottom', 'Hour', 's')
 	p2.setLabel('left', 'Car Count', 's')
+
+	win.nextRow()
+
+	p3 = win.addPlot(title="Average Travel Time per Hour", x = np.arange(24), y = Streets.get(s).getAvgTime())
+	p3.setLabel('bottom', 'Hour', 's')
+	p3.setLabel('left', 'Average Travel time', 'm')
+
 	if(sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
 		QtGui.QApplication.instance().exec_()
