@@ -147,7 +147,7 @@ def getSpeed(speeds , carID, cars):
 					print (time2)
 					inp = input("hi")
 				velocity = float(dist/delTime) * 3600
-				if(velocity < 20): #threshold velocity
+				if(velocity < 5): #threshold velocity
 					continue
 
 				# add speed to the list of speed in object street
