@@ -35,7 +35,7 @@ def convertToSec(time, period):
 
 
 #add the speed of that street
-def updateSpeed(intersection_1, intersection_2, velocity, time):
+def updateSpeed(intersection_1, intersection_2, velocity, time, timeStamp):
 	#find that specific street between two intersections
 	st = None
 	if intersection_1 < intersection_2:
@@ -61,6 +61,7 @@ def updateSpeed(intersection_1, intersection_2, velocity, time):
 #	print (st.getName())
 #	inp = input("check")
 	st.addSpeed(hour, velocity)
+	st.logged(timeStamp / 3600, velocity)
 
 
 
@@ -143,7 +144,7 @@ def getSpeed(speeds , carID, cars):
 				#print (intersection_2)
 				#print (velocity)
 				#inp = input("Check")
-				updateSpeed(intersection_1, intersection_2, velocity, time1)
+				updateSpeed(intersection_1, intersection_2, velocity, time1, (t1+t2)/2)
 				updateTravelTime(intersection_1, intersection_2, delTime, time1)
 
 
@@ -222,6 +223,9 @@ if __name__ == '__main__':
 		#print (value.getAvgSpeed())
 		#value.getAvgSpeed()
 		#print (value.getAvgTime())
+
+		#print (value.getTimeLog())
+		#print (len(value.getSpeedLog()))
 		print (value.getName())
 
 	s = input("Select Street: ")
@@ -230,10 +234,14 @@ if __name__ == '__main__':
 	app = QtGui.QApplication([])
 
 	win = pg.GraphicsWindow(title="Traffic Graph")
+	#win = pg.GraphicsLayoutWidget(title="Traffic Graph")
 	win.resize(1000,600)
 	win.setWindowTitle("Traffic Graph")
 
 	p1 = win.addPlot(title="Average Speed per Hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
+	x = Streets.get(s).getTimeLog()
+	y = Streets.get(s).getSpeedLog()
+	p1.plot(x, y, pen=None, symbol='t', symbolPen=None, symbolSize=10, symbolBrush=(100, 100, 255, 50))
 	p1.setLabel('bottom', 'Hour', 's')
 	p1.setLabel('left', 'Average Speed', 'mile/hr')
 
@@ -243,9 +251,11 @@ if __name__ == '__main__':
 
 	win.nextRow()
 
+	
 	p3 = win.addPlot(title="Average Travel Time per Hour", x = np.arange(24), y = Streets.get(s).getAvgTime())
 	p3.setLabel('bottom', 'Hour', 's')
 	p3.setLabel('left', 'Average Travel time', 'm')
+
 
 	if(sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
 		QtGui.QApplication.instance().exec_()

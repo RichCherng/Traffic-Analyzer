@@ -5,6 +5,8 @@ class Street(object):
 	length = 0; #distance between two intersections
 	speeds = {} #list of speeds by the hour
 	travelTime = {} #list of travel time by the hour
+	timeLog = []
+	speedLog = []
 
 	def __init__(self, inte_1, inte_2, l):
 
@@ -13,12 +15,27 @@ class Street(object):
 		self.length = l
 		self.speeds = {}
 		self.travelTime = {}
+		self.timeLog = []
+		self.speedLog = []
 		for x in range(0,24):
 			newSpeedList = []
 			newTravelTimeList = []
 			#speeds["abc"] = tempList
 			self.speeds[x] = newSpeedList
 			self.travelTime[x] = newTravelTimeList
+
+
+
+	def logged(self, timeStamp, velocity):
+		self.timeLog.append(timeStamp)
+		self.speedLog.append(velocity)
+
+	def getTimeLog(self):
+		return self.timeLog
+
+	def getSpeedLog(self):
+		return self.speedLog
+
 
 	def addSpeed(self, time, velocity):
 		#print (self.intersection_1+"-"+self.intersection_2)
