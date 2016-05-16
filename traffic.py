@@ -1,14 +1,13 @@
-
+"""This module creates a traffic analyzer"""
 from street import Street
 from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 import pyqtgraph as pg
 
-Streets = {} 
+Streets = {}
 
-#	Take in 2 intersections and return the distance between the Them
+#Take in 2 intersections and return the distance between the Them
 def getDistance(intersection_1, intersection_2):
-	
 	st = None
 	if intersection_1 == intersection_2:
 		return 0
@@ -28,7 +27,7 @@ def convertToSec(time, period):
 	t = time.split(':')
 	#if t[0] == 0:
 	#	print (t)
-	if(period == 'PM'):
+	if period == 'PM':
 		return (int(t[0])%12 * 3600) + (int(t[1]) * 60) + int(t[2]) + 43200
 	else:
 		return (int(t[0])%12 * 3600) + (int(t[1]) * 60) + int(t[2])
@@ -43,7 +42,7 @@ def updateSpeed(intersection_1, intersection_2, velocity, time, timeStamp):
 	else:
 		st = Streets.get(intersection_2+"-"+intersection_1)
 	if st == None:
-		print("Error: No Street Found")
+		print "Error: No Street Found"
 
 
 	### update the street object ###
@@ -52,7 +51,7 @@ def updateSpeed(intersection_1, intersection_2, velocity, time, timeStamp):
 	hour = int(t[0])
 	#if hour == 0:
 	#	print (time[1])
-	if time[2] == "PM" :
+	if time[2] == "PM":
 		hour = (hour % 12) + 12
 
 	else:
@@ -81,7 +80,7 @@ def updateTravelTime(intersection_1, intersection_2, travelTime, time):
 		st = Streets.get(intersection_2+"-"+intersection_1)
 
 	if st == None:
-		print("Error: No Street Found")
+		print "Error: No Street Found"
 
 
 	### update the street object ###
@@ -90,7 +89,7 @@ def updateTravelTime(intersection_1, intersection_2, travelTime, time):
 	hour = int(t[0])
 	#if hour == 0:
 	#	print (time[1])
-	if time[2] == "PM" :
+	if time[2] == "PM":
 		hour = (hour % 12) + 12
 	else:
 		hour = hour % 12
@@ -103,11 +102,11 @@ def checkKey(key, dict):
 	keys = dict.keys()
 	if key in keys:
 		return True
-	else :
+	else:
 		return False
 
 # create a logs of all speed between 2 intersection
-def getSpeed(speeds , carID, cars):
+def getSpeed(speeds, carID, cars):
 	#speedList is [time_1, time_2, velocty, street_1, street_2, carID]
 	speedList = []
 	logs = []
@@ -133,21 +132,21 @@ def getSpeed(speeds , carID, cars):
 			time2 = logs[i+1][0].split()
 
 			# check if it's on the same day
-			if( time1[0] == time2[0]):
+			if time1[0] == time2[0]:
 				# convert to second
 				t1 = convertToSec(time1[1], time1[2])
 				t2 = convertToSec(time2[1], time2[2])
 				delTime = abs(t1 - t2)
-				
+
 				#convert to mile/hr
 				if delTime == 0:
-					print (t1)
-					print (time1)
-					print (t2)
-					print (time2)
+					print t1
+					print time1
+					print t2
+					print time2
 					inp = input("hi")
 				velocity = float(dist/delTime) * 3600
-				if(velocity < 5): #threshold velocity
+				if velocity < 5: #threshold velocity
 					continue
 
 				# add speed to the list of speed in object street
@@ -163,17 +162,17 @@ def getSpeed(speeds , carID, cars):
 				#print ("{}, {}, {}m/h, {}-{}, {}".format(logs[i][0],logs[i+1][0], '%.2f' % (velocity), logs[i][3], logs[i+1][3], logs[i][4]))
 				#print (velocity)
 
-				speed = [logs[i][0],logs[i+1][0], velocity, logs[i][3], logs[i+1][3], logs[i][4]]
+				speed = [logs[i][0], logs[i+1][0], velocity, logs[i][3], logs[i+1][3], logs[i][4]]
 				speedList.append(speeds)
-	
+
 	if len(speedList) > 0:
-		speeds[carID] = speedList	
+		speeds[carID] = speedList
 
 
 # Read in file
 def readFile(fileName, cars, car_speeds):
-	f = open(fileName, 'r');
-	 
+	f = open(fileName, 'r')
+
 
 	for line in f:
 
@@ -188,7 +187,7 @@ def readFile(fileName, cars, car_speeds):
 			cars[macID] = logs
 			car_speeds[macID] = {}
 
-		else :
+		else:
 			logs = cars[macID]
 			logs.append(capture)
 			cars[macID] = logs
@@ -196,7 +195,7 @@ def readFile(fileName, cars, car_speeds):
 # add more streets
 def addStreet(str_lists, intersection_1, intersection_2, distance):
 
-	if(intersection_1 < intersection_2):
+	if intersection_1 < intersection_2:
 		str_lists[intersection_1 + "-" + intersection_2] = Street(intersection_1,
 		 intersection_2, distance)
 		#return Street(intersection_1, intersection_2, distance)
@@ -237,7 +236,7 @@ if __name__ == '__main__':
 
 		#print (value.getTimeLog())
 		#print (len(value.getSpeedLog()))
-		print (value.getName())
+		print value.getName()
 
 	s = input("Select Street: ")
 
@@ -246,7 +245,7 @@ if __name__ == '__main__':
 
 	win = pg.GraphicsWindow(title="Traffic Graph")
 	#win = pg.GraphicsLayoutWidget(title="Traffic Graph")
-	win.resize(1000,600)
+	win.resize(1000, 600)
 	win.setWindowTitle("Traffic Graph")
 
 	p1 = win.addPlot(title="Average Speed per Hour", x = np.arange(24), y = Streets.get(s).getAvgSpeed())
